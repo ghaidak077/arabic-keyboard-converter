@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Keyboard Converter by Ghaidak Alosh</title>
+    <!-- Import Clash Grotesk and Montserrat fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #000000;
+            height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.4;
+            letter-spacing: 0.01em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Main Container - Split Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 50px);
+        }
+
+        /* Left Content Section */
+        .left-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(0, 128, 255, 0.01));
+            border-right: 1px solid rgba(0, 212, 255, 0.15);
+            max-width: 50vw;
+        }
+
+        /* Right Conversion Section */
+        .right-conversion {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 128, 255, 0.01), rgba(0, 212, 255, 0.03));
+            max-width: 50vw;
+        }
+
+        /* Main Title */
+        h1 {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            color: #00D4FF;
+            text-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+            line-height: 1.1;
+            animation: titleGlow 4s ease-in-out infinite alternate;
+            word-spacing: 0.1em;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            }
+
+            to {
+                text-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 45px rgba(0, 212, 255, 0.3);
+            }
+        }
+
+        /* Description Text */
+        .description {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: #E0E6ED;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            max-width: 95%;
+        }
+
+        /* Bottom Text */
+        .bottom-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: #B0B7C3;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            max-width: 90%;
+            opacity: 0.9;
+            margin-top: auto;
+        }
+
+        /* Glass Effect Container */
+        .glass {
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.25rem;
+            width: 100%;
+            max-width: 380px;
+            backdrop-filter: blur(25px);
+            box-shadow:
+                0 8px 30px rgba(0, 212, 255, 0.15),
+                0 0 0 1px rgba(0, 212, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: floatIn 1.2s ease-out;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .glass:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 40px rgba(0, 212, 255, 0.25),
+                0 0 0 1px rgba(0, 212, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Toggle Switch Container */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .toggle-label {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #B0B7C3;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-label.active {
+            color: #00D4FF;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .toggle-switch.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00D4FF;
+            box-shadow: 0 3px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 19px;
+            height: 19px;
+            background: linear-gradient(135deg, #0080FF, #00D4FF);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 212, 255, 0.4);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(25px);
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.6);
+        }
+
+        /* Glass Container Heading */
+        .glass h3 {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0.25rem 0;
+            color: #00D4FF;
+            text-align: center;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Input/Output Labels */
+        .input-label,
+        .output-label {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #B0B7C3;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 0.375rem;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        /* Textarea Styling */
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            height: auto;
+            font-size: 0.875rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(0, 212, 255, 0.25);
+            border-radius: 14px;
+            color: #ffffff;
+            resize: vertical;
+            outline: none;
+            box-shadow:
+                0 3px 15px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            -webkit-appearance: none;
+        }
+
+        textarea:focus {
+            border-color: #00D4FF;
+            box-shadow:
+                0 5px 20px rgba(0, 212, 255, 0.3),
+                0 0 0 3px rgba(0, 212, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            background: rgba(0, 212, 255, 0.06);
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 0.875rem 1.25rem;
+            font-size: 0.9rem;
+            font-family: 'Clash Grotesk', sans-serif;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0080FF, #00D4FF);
+            border: none;
+            color: #000000;
+            border-radius: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.3;
+            min-height: 44px;
+            box-shadow:
+                0 5px 18px rgba(0, 212, 255, 0.25),
+                0 0 15px rgba(0, 212, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.125rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.7s;
+        }
+
+        button:hover::before,
+        button:active::before {
+            left: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #0099FF, #00FFFF);
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 25px rgba(0, 212, 255, 0.4),
+                0 0 25px rgba(0, 212, 255, 0.2);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+            box-shadow:
+                0 5px 20px rgba(0, 212, 255, 0.35),
+                0 0 20px rgba(0, 212, 255, 0.15);
+        }
+
+        /* Footer Styling */
+        .footer {
+            height: 50px;
+            padding: 0.75rem 0;
+            border-top: 1px solid rgba(0, 212, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: rgba(0, 212, 255, 0.015);
+            backdrop-filter: blur(15px);
+        }
+
+        .footer-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.3));
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.6));
+        }
+
+        .footer-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #B0B7C3;
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+        }
+
+        .footer-name {
+            color: #00D4FF;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+        }
+
+        /* Fade in animations */
+        .fadeIn {
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.4);
+            border-radius: 3px;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.6);
+        }
+
+        /* Mobile slide-in animation */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 0.875rem;
+            }
+
+            .description {
+                font-size: 0.9rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .glass {
+                max-width: 350px;
+                padding: 1.125rem;
+                gap: 0.875rem;
+            }
+        }
+
+        /* Mobile First Responsive Design */
+        @media (max-width: 1024px) {
+            body {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .main-container {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 60px);
+            }
+
+            .left-content {
+                flex: none;
+                padding: 2rem 1.5rem 1.5rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+                max-width: 100vw;
+                min-height: 45vh;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                animation: slideInLeft 0.8s ease-out;
+                background: linear-gradient(180deg, rgba(0, 212, 255, 0.04), rgba(0, 128, 255, 0.02));
+            }
+
+            .right-conversion {
+                padding: 1.5rem;
+                max-width: 100vw;
+                min-height: 55vh;
+                animation: slideInUp 1s ease-out 0.3s both;
+                background: linear-gradient(180deg, rgba(0, 128, 255, 0.02), rgba(0, 212, 255, 0.04));
+            }
+
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
+                animation: titleGlow 3s ease-in-out infinite alternate;
+            }
+
+            .description {
+                font-size: 1rem;
+                margin-bottom: 1.25rem;
+                max-width: 100%;
+                animation: fadeIn 1.2s ease-out 0.5s both;
+            }
+
+            .bottom-text {
+                font-size: 0.9rem;
+                margin-top: 1rem;
+                max-width: 100%;
+                animation: fadeIn 1.2s ease-out 0.7s both;
+            }
+
+            .glass {
+                max-width: 100%;
+                padding: 1.5rem;
+                gap: 1.25rem;
+                border-radius: 24px;
+                backdrop-filter: blur(30px);
+                animation: floatIn 1.2s ease-out 0.4s both;
+            }
+
+            .glass:hover {
+                transform: translateY(-2px);
+            }
+
+            textarea {
+                min-height: 90px;
+                font-size: 1rem;
+                padding: 1.125rem;
+                border-radius: 16px;
+                -webkit-appearance: none;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 1rem;
+                min-height: 50px;
+                border-radius: 18px;
+                letter-spacing: 0.08em;
+            }
+
+            .toggle-container {
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .toggle-switch {
+                width: 56px;
+                height: 28px;
+                border-radius: 28px;
+            }
+
+            .toggle-slider {
+                width: 22px;
+                height: 22px;
+                top: 2px;
+                left: 2px;
+            }
+
+            .toggle-switch.active .toggle-slider {
+                transform: translateX(28px);
+            }
+
+            .toggle-label {
+                font-size: 0.85rem;
+                padding: 0.25rem;
+            }
+
+            .footer {
+                height: 60px;
+                padding: 1rem 0;
+                animation: fadeIn 1.5s ease-out 1s both;
+            }
+
+            .footer-logo {
+                width: 26px;
+                height: 26px;
+            }
+
+            .footer-text,
+            .footer-name {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-content {
+                padding: 1.5rem 1.25rem 1.25rem;
+                min-height: 40vh;
+            }
+
+            .right-conversion {
+                padding: 1.25rem;
+                min-height: 60vh;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+                margin-bottom: 0.875rem;
+            }
+
+            .description {
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+
+            .bottom-text {
+                font-size: 0.85rem;
+            }
+
+            .glass {
+                padding: 1.25rem;
+                gap: 1rem;
+                border-radius: 20px;
+            }
+
+            .glass h3 {
+                font-size: 1.1rem;
+                margin: 0.375rem 0;
+            }
+
+            textarea {
+                min-height: 85px;
+                font-size: 0.95rem;
+                padding: 1rem;
+                border-radius: 14px;
+            }
+
+            button {
+                font-size: 0.95rem;
+                padding: 0.875rem;
+                min-height: 48px;
+            }
+
+            .toggle-container {
+                gap: 0.875rem;
+            }
+
+            .toggle-switch {
+                width: 52px;
+                height: 26px;
+            }
+
+            .toggle-slider {
+                width: 20px;
+                height: 20px;
+            }
+
+            .toggle-switch.active .toggle-slider {
+                transform: translateX(26px);
+            }
+
+            .input-label,
+            .output-label {
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .footer {
+                height: 55px;
+                gap: 0.625rem;
+            }
+
+            .footer-logo {
+                width: 24px;
+                height: 24px;
+            }
+
+            .footer-text,
+            .footer-name {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-content {
+                padding: 1.25rem 1rem 1rem;
+                min-height: 35vh;
+            }
+
+            .right-conversion {
+                padding: 1rem;
+                min-height: 65vh;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+                margin-bottom: 0.75rem;
+                letter-spacing: 0.015em;
+            }
+
+            .description {
+                font-size: 0.9rem;
+                margin-bottom: 0.875rem;
+                line-height: 1.6;
+            }
+
+            .bottom-text {
+                font-size: 0.8rem;
+                margin-top: 0.75rem;
+            }
+
+            .glass {
+                padding: 1rem;
+                gap: 0.875rem;
+                border-radius: 18px;
+                margin: 0 auto;
+            }
+
+            .glass h3 {
+                font-size: 1rem;
+                margin: 0.25rem 0;
+            }
+
+            textarea {
+                min-height: 80px;
+                font-size: 0.9rem;
+                padding: 0.875rem;
+                border-radius: 12px;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+                min-height: 46px;
+                border-radius: 16px;
+                letter-spacing: 0.06em;
+            }
+
+            .toggle-container {
+                gap: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .toggle-switch {
+                width: 48px;
+                height: 24px;
+            }
+
+            .toggle-slider {
+                width: 18px;
+                height: 18px;
+                top: 2px;
+                left: 2px;
+            }
+
+            .toggle-switch.active .toggle-slider {
+                transform: translateX(24px);
+            }
+
+            .toggle-label {
+                font-size: 0.8rem;
+            }
+
+            .input-label,
+            .output-label {
+                font-size: 0.75rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .footer {
+                height: 50px;
+                padding: 0.75rem 0;
+                gap: 0.5rem;
+            }
+
+            .footer-logo {
+                width: 22px;
+                height: 22px;
+            }
+
+            .footer-text,
+            .footer-name {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 375px) {
+            .left-content {
+                padding: 1rem 0.875rem 0.875rem;
+            }
+
+            .right-conversion {
+                padding: 0.875rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .description {
+                font-size: 0.85rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .bottom-text {
+                font-size: 0.75rem;
+            }
+
+            .glass {
+                padding: 0.875rem;
+                gap: 0.75rem;
+            }
+
+            textarea {
+                min-height: 75px;
+                font-size: 0.85rem;
+                padding: 0.75rem;
+            }
+
+            button {
+                font-size: 0.85rem;
+                padding: 0.75rem;
+                min-height: 44px;
+            }
+
+            .toggle-container {
+                gap: 0.625rem;
+            }
+
+            .toggle-switch {
+                width: 44px;
+                height: 22px;
+            }
+
+            .toggle-slider {
+                width: 16px;
+                height: 16px;
+            }
+
+            .toggle-switch.active .toggle-slider {
+                transform: translateX(22px);
+            }
+        }
+
+        /* Touch improvements for mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .toggle-switch {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            button {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            textarea {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .toggle-label {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            /* Enhanced touch feedback */
+            .toggle-switch:active {
+                transform: scale(0.98);
+            }
+
+            button:active {
+                transform: translateY(0) scale(0.98);
+            }
+
+            .glass {
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 920px) and (orientation: landscape) {
+            .main-container {
+                flex-direction: row;
+            }
+
+            .left-content {
+                border-right: 1px solid rgba(0, 212, 255, 0.2);
+                border-bottom: none;
+                max-width: 50vw;
+                min-height: auto;
+                height: calc(100vh - 50px);
+            }
+
+            .right-conversion {
+                max-width: 50vw;
+                min-height: auto;
+                height: calc(100vh - 50px);
+            }
+
+            .glass {
+                max-width: 350px;
+            }
+
+            textarea {
+                min-height: 70px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .description {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Split Container -->
+    <div class="main-container">
+        <!-- Left Content Section -->
+        <div class="left-content fadeIn">
+            <h1>Arabic Keyboard Converter</h1>
+            <p class="description">Typed a whole paragraph in English when your brain was thinking Arabic? We've all
+                been there. That moment when you realize you've been typing "hgohj" instead of "شكرا" and you'd rather
+                delete your entire existence than start over.</p>
+            <p class="bottom-text">Now go forth and pretend you totally meant to do that. Your secret's safe with us. 🤫
+            </p>
+        </div>
+
+        <!-- Right Conversion Section -->
+        <div class="right-conversion">
+            <div class="glass">
+                <!-- Toggle Switch -->
+                <div class="toggle-container">
+                    <span class="toggle-label active" id="enToArLabel">EN → AR</span>
+                    <div class="toggle-switch" id="modeToggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span class="toggle-label" id="arToEnLabel">AR → EN</span>
+                </div>
+
+                <!-- Input Section -->
+                <div>
+                    <div class="input-label" id="inputLabel">English Input</div>
+                    <textarea id="textInput" placeholder="Type your English text here..."></textarea>
+                </div>
+
+                <h3>✨ Your Salvation Appears Below ✨</h3>
+
+                <!-- Output Section -->
+                <div>
+                    <div class="output-label" id="outputLabel">Arabic Output</div>
+                    <textarea id="convertedText" readonly placeholder="Arabic text will appear here..."></textarea>
+                </div>
+
+                <button id="copyButton">Copy & Save Your Sanity</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <img src="ghaidak logo.svg" alt="Ghaidak Alosh Logo" class="footer-logo"
+            onerror="console.log('Logo not found: Make sure ghaidak logo.svg is in the same folder as your HTML file')">
+        <span class="footer-text">Created by <span class="footer-name">Ghaidak Alosh</span></span>
+    </footer>
+
+    <script>
+        // FIXED Keyboard Maps - لا now properly maps to 'b'
+        const englishToArabicMap = {
+            // Row 1: qwertyuiop[]
+            'q': 'ض', 'w': 'ص', 'e': 'ث', 'r': 'ق', 't': 'ف', 'y': 'غ',
+            'u': 'ع', 'i': 'ه', 'o': 'خ', 'p': 'ح', '[': 'ج', ']': 'د',
+            // Row 2: asdfghjkl;'
+            'a': 'ش', 's': 'س', 'd': 'ي', 'f': 'ب', 'g': 'ل', 'h': 'ا',
+            'j': 'ت', 'k': 'ن', 'l': 'م', ';': 'ك', "'": 'ط',
+            // Row 3: zxcvbnm,./
+            'z': 'ئ', 'x': 'ء', 'c': 'ؤ', 'v': 'ر', 'b': 'لا', 'n': 'ى',
+            'm': 'ة', ',': 'و', '.': 'ز', '/': 'ظ',
+            // Additional characters
+            '`': 'ذ',
+            // Numbers
+            '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥',
+            '6': '٦', '7': '٧', '8': '٨', '9': '٩', '0': '٠'
+        };
+
+        // Create reverse mapping for Arabic to English
+        const arabicToEnglishMap = Object.fromEntries(
+            Object.entries(englishToArabicMap).map(([key, value]) => [value, key])
+        );
+
+        // DOM Elements
+        const modeToggle = document.getElementById('modeToggle');
+        const enToArLabel = document.getElementById('enToArLabel');
+        const arToEnLabel = document.getElementById('arToEnLabel');
+        const inputLabel = document.getElementById('inputLabel');
+        const outputLabel = document.getElementById('outputLabel');
+        const textInput = document.getElementById('textInput');
+        const convertedText = document.getElementById('convertedText');
+        const copyButton = document.getElementById('copyButton');
+
+        // Current mode state
+        let isArabicToEnglish = false;
+
+        // Update UI based on current mode
+        function updateUI() {
+            if (isArabicToEnglish) {
+                // AR → EN mode
+                modeToggle.classList.add('active');
+                enToArLabel.classList.remove('active');
+                arToEnLabel.classList.add('active');
+                inputLabel.textContent = 'Arabic Input';
+                outputLabel.textContent = 'English Output';
+                textInput.placeholder = 'اكتب النص العربي هنا...';
+                convertedText.placeholder = 'English text will appear here...';
+            } else {
+                // EN → AR mode
+                modeToggle.classList.remove('active');
+                enToArLabel.classList.add('active');
+                arToEnLabel.classList.remove('active');
+                inputLabel.textContent = 'English Input';
+                outputLabel.textContent = 'Arabic Output';
+                textInput.placeholder = 'Type your English text here...';
+                convertedText.placeholder = 'Arabic text will appear here...';
+            }
+
+            // Clear texts when switching modes
+            textInput.value = '';
+            convertedText.value = '';
+        }
+
+        // Toggle mode
+        modeToggle.addEventListener('click', () => {
+            isArabicToEnglish = !isArabicToEnglish;
+            updateUI();
+        });
+
+        // Allow clicking on labels to toggle as well
+        enToArLabel.addEventListener('click', () => {
+            if (isArabicToEnglish) {
+                isArabicToEnglish = false;
+                updateUI();
+            }
+        });
+
+        arToEnLabel.addEventListener('click', () => {
+            if (!isArabicToEnglish) {
+                isArabicToEnglish = true;
+                updateUI();
+            }
+        });
+
+        // FIXED Convert text function - handles لا as single unit
+        function convertText(inputText) {
+            let convertedTextValue = '';
+
+            if (isArabicToEnglish) {
+                // Arabic to English conversion
+                let i = 0;
+                while (i < inputText.length) {
+                    let char = inputText[i];
+                    let nextChar = inputText[i + 1];
+
+                    // Check for لا as a single unit first
+                    if (char === 'ل' && nextChar === 'ا') {
+                        convertedTextValue += 'b';  // لا = b
+                        i += 2; // Skip both characters
+                    } else {
+                        // Single character conversion
+                        convertedTextValue += arabicToEnglishMap[char] || char;
+                        i++;
+                    }
+                }
+            } else {
+                // English to Arabic conversion
+                for (let char of inputText) {
+                    convertedTextValue += englishToArabicMap[char] || englishToArabicMap[char.toLowerCase()] || char;
+                }
+            }
+
+            return convertedTextValue;
+        }
+
+        // Handle text input
+        textInput.addEventListener('input', () => {
+            const inputText = textInput.value;
+            const convertedTextValue = convertText(inputText);
+            convertedText.value = convertedTextValue;
+        });
+
+        // Enhanced copy functionality with better feedback
+        copyButton.addEventListener('click', () => {
+            if (convertedText.value.trim() === '') {
+                // Provide visual feedback for empty state
+                copyButton.textContent = 'Nothing to copy!';
+                copyButton.style.background = 'linear-gradient(135deg, #FF6B6B, #FF8E8E)';
+
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy & Save Your Sanity';
+                    copyButton.style.background = 'linear-gradient(135deg, #0080FF, #00D4FF)';
+                }, 1500);
+                return;
+            }
+
+            navigator.clipboard.writeText(convertedText.value)
+                .then(() => {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = '✓ Copied!';
+                    copyButton.style.background = 'linear-gradient(135deg, #00FF7F, #32CD32)';
+
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                        copyButton.style.background = 'linear-gradient(135deg, #0080FF, #00D4FF)';
+                    }, 2000);
+                })
+                .catch((err) => {
+                    copyButton.textContent = 'Copy failed!';
+                    copyButton.style.background = 'linear-gradient(135deg, #FF6B6B, #FF8E8E)';
+
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy & Save Your Sanity';
+                        copyButton.style.background = 'linear-gradient(135deg, #0080FF, #00D4FF)';
+                    }, 2000);
+                });
+        });
+
+        // Initialize UI
+        updateUI();
+
+        // Add touch feedback for mobile
+        if ('ontouchstart' in window) {
+            // Add haptic feedback if available
+            const addHapticFeedback = (element) => {
+                element.addEventListener('touchstart', () => {
+                    if (navigator.vibrate) {
+                        navigator.vibrate(10); // Short vibration
+                    }
+                });
+            };
+
+            addHapticFeedback(modeToggle);
+            addHapticFeedback(copyButton);
+            addHapticFeedback(enToArLabel);
+            addHapticFeedback(arToEnLabel);
+        }
+    </script>
+</body>
+
+</html>
